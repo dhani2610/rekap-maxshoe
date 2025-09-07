@@ -59,14 +59,13 @@ class LoginController extends Controller
 
         // Attempt to login
         if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
-            // Redirect to dashboard
             $userRole = Auth::guard('admin')->user()->getRoleNames()->first(); // Get the first role name
 
             session()->flash('success', 'Successully Logged in !');
             if ($userRole == 'superadmin') {
-                return redirect()->route('spip', ['type' => 'Sarana']);
+                return redirect()->route('order.data.rekap');
             } else {
-                return redirect()->route('spip', ['type' => 'Sarana']);
+                return redirect()->route('order.data.rekap');
             }
         } else {
             // Search using username
@@ -75,9 +74,9 @@ class LoginController extends Controller
 
                 session()->flash('success', 'Successully Logged in !');
                 if ($userRole == 'superadmin') {
-                    return redirect()->route('spip', ['type' => 'Sarana']);
+                    return redirect()->route('order.data.rekap');
                 } else {
-                    return redirect()->route('spip', ['type' => 'Sarana']);
+                    return redirect()->route('order.data.rekap');
                 }
             }
             // error

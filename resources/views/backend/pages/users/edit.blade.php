@@ -45,7 +45,7 @@ User Edit - Admin Panel
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title">Edit User - {{ $user->name }}</h4>
-                    @include('backend.layouts.partials.messages')
+                    @include('backend.layouts-news.partials.message')
                     
                     <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
                         @method('PUT')

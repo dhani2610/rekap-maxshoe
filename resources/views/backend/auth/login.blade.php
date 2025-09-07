@@ -56,19 +56,19 @@
                 <div class="card">
                     <div class="card-body">
                         <!-- Logo -->
-                        <div class="app-brand justify-content-center">
+                        {{-- <div class="app-brand justify-content-center">
                             <a href="#" class="app-brand-link gap-2">
 
                                 <center>
                                     <img src="{{ asset('assets/img/logos/logo.png') }}" style="max-width: 50%">
                                 </center>
                             </a>
-                        </div>
-                        @include('backend.layouts.partials.messages')
+                        </div> --}}
+                        @include('backend.layouts-news.partials.message')
 
                         <!-- /Logo -->
                         <center>
-                            <h4 class="mb-2">Welcome back! 👋</h4>
+                            <h4 class="mb-2">Maxshoe</h4>
                         </center>
 
                         <form method="POST" action="{{ route('admin.login.submit') }}">
@@ -99,8 +99,8 @@
 
                             <div class="mb-3">
                                 <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                                <a href="{{ url('admin/register') }}" class="btn btn-primary d-grid w-100 mt-2"
-                                    type="submit">Register</a>
+                                {{-- <a href="{{ url('admin/register') }}" class="btn btn-primary d-grid w-100 mt-2"
+                                    type="submit">Register</a> --}}
                             </div>
                         </form>
 

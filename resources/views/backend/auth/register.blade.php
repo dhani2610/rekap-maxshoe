@@ -64,7 +64,7 @@
                                 </center>
                             </a>
                         </div>
-                        @include('backend.layouts.partials.messages')
+                        @include('backend.layouts-news.partials.message')
 
                         <!-- /Logo -->
                         <center>

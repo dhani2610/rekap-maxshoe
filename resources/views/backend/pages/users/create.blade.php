@@ -45,7 +45,7 @@ User Create - Admin Panel
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title">Create New Role</h4>
-                    @include('backend.layouts.partials.messages')
+                    @include('backend.layouts-news.partials.message')
                     
                     <form action="{{ route('admin.users.store') }}" method="POST">
                         @csrf

@@ -424,7 +424,7 @@
         $usr = Auth::guard('admin')->user();
     @endphp
     <div class="main-content-inner">
-        @include('backend.layouts.partials.messages')
+        @include('backend.layouts-news.partials.message')
 
         <div class="row">
             <!-- data table start -->

@@ -6,7 +6,7 @@
 
 
     .menu-inner {
-        background: #3da601;
+        background: #0a53be;
     } 
     .menu-vertical .menu-item .menu-link {
         color: white    
@@ -35,27 +35,9 @@
 
     @endphp
 
-    <div class="menu-inner-shadow" style="background: #3da601!Important"></div>
+    <div class="menu-inner-shadow" style="background: #0a53be!Important"></div>
 
     <ul class="menu-inner py-1">
-        @php
-            $arr_side = [
-                'Sarana',
-                'Prasarana',
-                'Instalasi',
-                'Peralatan',
-            ]
-        @endphp
-
-        @foreach ($arr_side as $item)    
-            <li class="menu-item mb-2">
-                <a href="{{ route('spip') }}?type={{ $item }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                    <div data-i18n="{{ $item }}">{{ $item }}</div>
-                </a>
-            </li>
-        @endforeach
-
             @if ($usr->can('admin.view') || $usr->can('role.view'))
                 <li
                     class="menu-item {{ Request::routeIs('admin/admins') || Request::routeIs('admin/roles') ? 'open' : '' }}">
@@ -68,7 +50,7 @@
                         <li class="menu-item {{ Request::routeIs('admin/admins') ? 'active' : '' }}">
                             <a href="{{ route('admin.admins.index') }}" class="menu-link">
                                 <div data-i18n="Without menu"
-                                    style="color : {{ Request::routeIs('admin/admins') ? '#3da601' : '' }}">Users
+                                    style="color : {{ Request::routeIs('admin/admins') ? '#0a53be' : '' }}">Users
                                 </div>
                             </a>
                         </li>

@@ -37,7 +37,7 @@
                         </p>
                         <div class="clearfix"></div>
                         <div class="table-responsive">
-                            @include('backend.layouts.partials.messages')
+                            @include('backend.layouts-news.partials.message')
                             <table id="dataTable" class="table text-center">
                                 <thead class="bg-light text-capitalize">
                                     <tr>
