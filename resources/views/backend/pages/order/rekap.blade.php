@@ -443,7 +443,7 @@
                     <div class="row gx-2 gy-0 mb-3">
                         <div class="col-md-4">
                             <select required name="host_id" class="form-select form-select-sm">
-                                <option selected hidden>Host</option>
+                                <option selected disabled value="">Host</option>
                                 @foreach ($host as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama }}</option>
                                 @endforeach
@@ -452,7 +452,7 @@
 
                         <div class="col-md-4">
                             <select required name="co_host_id" class="form-select form-select-sm">
-                                <option selected hidden>Co Host</option>
+                                <option selected disabled value="">Co Host</option>
                                 @foreach ($co_host as $itemco_host)
                                     <option value="{{ $itemco_host->id }}">{{ $itemco_host->nama }}</option>
                                 @endforeach
@@ -461,7 +461,7 @@
 
                         <div class="col-md-4">
                             <select required name="cs_id" class="form-select form-select-sm">
-                                <option selected hidden>Customer Service</option>
+                                <option selected disabled value="">Customer Service</option>
                                 @foreach ($cs as $itemcs)
                                     <option value="{{ $itemcs->id }}">{{ $itemcs->nama }}</option>
                                 @endforeach
@@ -481,7 +481,7 @@
                         <div class="row gx-2 gy-0 mb-3 order-item">
                             <div class="col-md-8 col-12">
                                 <select required name="produk_id[]" class="form-select form-select-sm">
-                                    <option selected hidden>Produk</option>
+                                    <option selected disabled value="">Produk</option>
                                     @foreach ($produk as $itemcspd)
                                         <option value="{{ $itemcspd->id }}">{{ $itemcspd->nama_produk }}</option>
                                     @endforeach
@@ -516,7 +516,7 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-4">
                             <select required name="ekspedisi" class="form-select form-select-sm">
-                                <option selected hidden>Ekspedisi</option>
+                                <option selected disabled value="">Ekspedisi</option>
                                 <option value="JNE">JNE</option>
                                 <option value="J&T">J&T</option>
                             </select>
@@ -561,7 +561,7 @@
                         </div>
                         <div class="col-md-5">
                             <select required name="status" class="form-select form-select-sm">
-                                <option selected hidden>Status</option>
+                                <option selected disabled value="">Status</option>
                                 <option value="LUNAS">LUNAS</option>
                                 <option value="DOWN PAYMENT">DOWN PAYMENT</option>
                                 <option value="PRE ORDER">PRE ORDER</option>
@@ -841,7 +841,7 @@
                     newItem.innerHTML = `
             <div class="col-md-8 col-12">
                 <select required name="produk_id[]" class="form-select form-select-sm">
-                    <option selected hidden>Produk</option>
+                    <option selected disabled value="">Produk</option>
                     @foreach ($produk as $itemcspd)
                         <option value="{{ $itemcspd->id }}">{{ $itemcspd->nama_produk }}</option>
                     @endforeach
