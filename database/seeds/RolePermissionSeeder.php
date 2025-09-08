@@ -85,6 +85,12 @@ class RolePermissionSeeder extends Seeder
                 'permissions' => [
                     'produk.view',
                 ]
+            ],
+            [
+                'group_name' => 'karywan',
+                'permissions' => [
+                    'karywan.view',
+                ]
             ]
         ];
 
