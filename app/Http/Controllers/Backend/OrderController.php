@@ -652,11 +652,22 @@ class OrderController extends Controller
 
 
         // --- Grafik Harian ---
-        $dailySales = $orders->groupBy(function ($q) {
-            return \Carbon\Carbon::parse($q->created_at)->format('d-m-Y');
+        $period = \Carbon\CarbonPeriod::create($start, $end);
+
+        // grup order per hari
+        $dailySalesRaw = $orders->groupBy(function ($q) {
+            return \Carbon\Carbon::parse($q->created_at)->format('Y-m-d');
         })->map(function ($day) {
             return $day->flatMap->details->sum('jumlah');
         });
+
+        // bikin array lengkap per hari dari $start s/d $end
+        $dailySales = collect();
+        foreach ($period as $date) {
+            $key = $date->format('Y-m-d');
+            $dailySales[$key] = $dailySalesRaw[$key] ?? 0;
+        }
+
 
         // --- Grafik Bulanan (fix 12 bulan) ---
         $monthlySalesRaw = $orders->groupBy(function ($q) {

@@ -392,7 +392,8 @@
                 <div class="custom-box1">
                     <div class="title">Best Performing CO HOST</div>
                     <hr style="border: 1px solid rgba(255,255,255,0.3); margin: 12px 0;">
-                    <div class="value best-co-host">Metha - Rp 12.700.000 <span style="font-size:15px">: 120 item</span></div>
+                    <div class="value best-co-host">Metha - Rp 12.700.000 <span style="font-size:15px">: 120 item</span>
+                    </div>
                     {{-- <small>Budi — Rp 1.000.000 : 45 item</small> --}}
 
                 </div>
@@ -449,157 +450,173 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            loadStatistik();
+            const startOfMonth = moment().startOf('month');
+            const endOfMonth = moment().endOf('month');
+            loadStatistik(startOfMonth.format('YYYY-MM-DD'),endOfMonth.format('YYYY-MM-DD'));
+        });
 
-            function loadStatistik(start = null, end = null) {
-                fetch(`{{ route('statistik.data') }}?startDate=${start ?? ''}&endDate=${end ?? ''}`)
-                    .then(res => res.json())
-                    .then(data => renderStatistik(data));
-            }
+        function loadStatistik(start = null, end = null) {
+            console.log(start, end);
 
-            function renderStatistik(data) {
-                // --- Statistik box ---
-                document.querySelector(".stat-card:nth-child(1) .stat-value").innerText = data.statistik
+            $.ajax({
+                url: "{{ route('statistik.data') }}",
+                method: "GET",
+                data: {
+                    startDate: start,
+                    endDate: end
+                },
+                success: function(res) {
+                    renderStatistik(res)
+                }
+            });
+        }
+
+        function renderStatistik(data) {
+            // --- Statistik box ---
+            document.querySelector(".stat-card:nth-child(1) .stat-value").innerText = data.statistik
                 .totalProduk;
-                document.querySelector(".stat-card:nth-child(2) .stat-value").innerText = "Rp " + data.statistik
-                    .totalOmzet.toLocaleString();
-                document.querySelector(".stat-card:nth-child(3) .stat-value").innerText = "Rp " + data.statistik
-                    .totalOngkir.toLocaleString();
-                document.querySelector(".stat-card:nth-child(4) .stat-value").innerText = data.statistik
-                    .totalCustomer;
-                document.querySelector(".stat-card:nth-child(5) .stat-value").innerText = data.statistik.pending;
+            document.querySelector(".stat-card:nth-child(2) .stat-value").innerText = "Rp " + data.statistik
+                .totalOmzet.toLocaleString();
+            document.querySelector(".stat-card:nth-child(3) .stat-value").innerText = "Rp " + data.statistik
+                .totalOngkir.toLocaleString();
+            document.querySelector(".stat-card:nth-child(4) .stat-value").innerText = data.statistik
+                .totalCustomer;
+            document.querySelector(".stat-card:nth-child(5) .stat-value").innerText = data.statistik.pending;
 
-                document.querySelector(".rata-rata-order-harian").innerText = data.statistik.avgOrderDaily;
-                document.querySelector(".rata-rata-omzet-harian").innerText = data.statistik.avgOmzetDaily.toLocaleString();
-                document.querySelector(".best-produk-harian").innerText = data.bestProdukHarian[0].produk;
+            document.querySelector(".rata-rata-order-harian").innerText = data.statistik.avgOrderDaily;
+            document.querySelector(".rata-rata-omzet-harian").innerText = data.statistik.avgOmzetDaily
+                .toLocaleString();
+            document.querySelector(".best-produk-harian").innerText =
+                data.bestProdukHarian && data.bestProdukHarian.length > 0 ?
+                data.bestProdukHarian[0].produk :
+                "-";
 
-                // --- Grafik Harian ---
-                const dailyLabels = Object.keys(data.daily);
-                const dailyValues = Object.values(data.daily);
-                updateDailyChart(dailyLabels, dailyValues);
+            // --- Grafik Harian ---
+            const dailyLabels = Object.keys(data.daily);
+            const dailyValues = Object.values(data.daily);
+            updateDailyChart(dailyLabels, dailyValues);
 
-                // --- Grafik Bulanan ---
-                const monthlyLabels = Object.keys(data.monthly);
-                const monthlyValues = Object.values(data.monthly);
-                updateMonthlyChart(monthlyLabels, monthlyValues);
+            // --- Grafik Bulanan ---
+            const monthlyLabels = Object.keys(data.monthly);
+            const monthlyValues = Object.values(data.monthly);
+            updateMonthlyChart(monthlyLabels, monthlyValues);
 
-                // --- Produk Terlaris ---
-                renderProdukTerlaris(data.produkTerlaris);
+            // --- Produk Terlaris ---
+            renderProdukTerlaris(data.produkTerlaris);
 
-                // --- Best Host / CoHost / CS ---
-                if (data.best.host.length > 0) {
-                    document.querySelector(".best-host").innerHTML =
-                        `${data.best.host[0].nama} - Rp ${data.best.host[0].omzet.toLocaleString()} <span style="font-size:15px">: ${data.best.host[0].jumlah} item</span>`;
-                }
-                if (data.best.coHost.length > 0) {
-                    document.querySelector(".best-co-host").innerHTML =
-                        `${data.best.coHost[0].nama} - Rp ${data.best.coHost[0].omzet.toLocaleString()} <span style="font-size:15px">: ${data.best.coHost[0].jumlah} item</span>`;
-                }
-                if (data.best.cs.length > 0) {
-                    document.querySelector(".best-cs").innerHTML =
-                        `${data.best.cs[0].nama} - Rp ${data.best.cs[0].omzet.toLocaleString()} <span style="font-size:15px">: ${data.best.cs[0].jumlah} item</span>`;
-                }
-
-                // --- Status Order ---
-                updateStatusOrder(data.statusOrder);
+            // --- Best Host / CoHost / CS ---
+            if (data.best.host.length > 0) {
+                document.querySelector(".best-host").innerHTML =
+                    `${data.best.host[0].nama} - Rp ${data.best.host[0].omzet.toLocaleString()} <span style="font-size:15px">: ${data.best.host[0].jumlah} item</span>`;
+            }
+            if (data.best.coHost.length > 0) {
+                document.querySelector(".best-co-host").innerHTML =
+                    `${data.best.coHost[0].nama} - Rp ${data.best.coHost[0].omzet.toLocaleString()} <span style="font-size:15px">: ${data.best.coHost[0].jumlah} item</span>`;
+            }
+            if (data.best.cs.length > 0) {
+                document.querySelector(".best-cs").innerHTML =
+                    `${data.best.cs[0].nama} - Rp ${data.best.cs[0].omzet.toLocaleString()} <span style="font-size:15px">: ${data.best.cs[0].jumlah} item</span>`;
             }
 
-            // === Chart update functions ===
-            let dailyChart, monthlyChart, orderStatusChart;
+            // --- Status Order ---
+            updateStatusOrder(data.statusOrder);
+        }
 
-            function updateDailyChart(labels, values) {
-                if (dailyChart) dailyChart.destroy();
-                const ctxDaily = document.getElementById('dailyChart').getContext('2d');
-                dailyChart = new Chart(ctxDaily, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Penjualan Harian',
-                            data: values,
-                            fill: true,
-                            backgroundColor: 'rgba(15, 23, 42, 0.1)',
-                            borderColor: '#1e3a8a',
-                            tension: 0.4,
-                            pointRadius: 2,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
+        // === Chart update functions ===
+        let dailyChart, monthlyChart, orderStatusChart;
+
+        function updateDailyChart(labels, values) {
+            if (dailyChart) dailyChart.destroy();
+            const ctxDaily = document.getElementById('dailyChart').getContext('2d');
+            dailyChart = new Chart(ctxDaily, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Penjualan Harian',
+                        data: values,
+                        fill: true,
+                        backgroundColor: 'rgba(15, 23, 42, 0.1)',
+                        borderColor: '#1e3a8a',
+                        tension: 0.4,
+                        pointRadius: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
                         }
                     }
-                });
-            }
+                }
+            });
+        }
 
-            function updateMonthlyChart(labels, values) {
-                if (monthlyChart) monthlyChart.destroy();
-                const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
-                monthlyChart = new Chart(ctxMonthly, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Penjualan Bulanan',
-                            data: values,
-                            backgroundColor: '#1e3a8a',
-                            borderRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
+        function updateMonthlyChart(labels, values) {
+            if (monthlyChart) monthlyChart.destroy();
+            const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
+            monthlyChart = new Chart(ctxMonthly, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Penjualan Bulanan',
+                        data: values,
+                        backgroundColor: '#1e3a8a',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
                         }
                     }
-                });
-            }
+                }
+            });
+        }
 
-            function updateStatusOrder(statusData) {
-                if (orderStatusChart) orderStatusChart.destroy();
-                const ctxOrderStatus = document.getElementById('orderStatusChart').getContext('2d');
-                const labels = Object.keys(statusData);
-                const values = Object.values(statusData);
-                orderStatusChart = new Chart(ctxOrderStatus, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: values,
-                            backgroundColor: ['#1e3a8a', '#2c54b2', '#3d6dcc', '#4d86e5']
-                        }]
-                    },
-                    options: {
-                        cutout: '65%',
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
+        function updateStatusOrder(statusData) {
+            if (orderStatusChart) orderStatusChart.destroy();
+            const ctxOrderStatus = document.getElementById('orderStatusChart').getContext('2d');
+            const labels = Object.keys(statusData);
+            const values = Object.values(statusData);
+            orderStatusChart = new Chart(ctxOrderStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#1e3a8a', '#2c54b2', '#3d6dcc', '#4d86e5']
+                    }]
+                },
+                options: {
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
                         }
                     }
-                });
-            }
+                }
+            });
+        }
 
-            function renderProdukTerlaris(list) {
-                let container = document.querySelector(".card-body");
-                container.innerHTML = "<h6>Produk Terlaris</h6>";
-                const max = list.length > 0 ? list[0].jumlah : 1;
-                list.forEach(item => {
-                    let percent = (item.jumlah / max) * 100;
-                    container.innerHTML += `
+        function renderProdukTerlaris(list) {
+            let container = document.querySelector(".card-body");
+            container.innerHTML = "<h6>Produk Terlaris</h6>";
+            const max = list.length > 0 ? list[0].jumlah : 1;
+            list.forEach(item => {
+                let percent = (item.jumlah / max) * 100;
+                container.innerHTML += `
                 <div class="mb-3">
                     <div class="d-flex justify-content-between"><small>${item.produk}</small><small>${item.jumlah} Item</small></div>
                     <div class="progress">
                         <div class="progress-bar" style="width:${percent}%"></div>
                     </div>
                 </div>`;
-                });
-            }
-        });
+            });
+        }
     </script>
 @endsection
