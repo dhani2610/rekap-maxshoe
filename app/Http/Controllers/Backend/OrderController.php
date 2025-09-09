@@ -632,7 +632,8 @@ class OrderController extends Controller
 
         // Ambil Top 2 & Top 3
         $topEmployees = array_slice($ranking, 0, 2);
-        $rankingTop3 = array_slice($ranking, 0, 3);
+        // $rankingTop3 = array_slice($ranking, 0, 3);
+        $rankingTop3 = $ranking;
 
         // Format angka setelah sorting
         $topEmployees = array_map(function ($r) {
