@@ -24,7 +24,7 @@
                 class="bi bi-people"></i> Statistik</a>
     @endif
 
-    @if ($usr->can('karyawan.view'))
+    @if ($usr->can('karywan.view'))
         <a href="{{ route('karyawan') }}" class="{{ request()->routeIs('karyawan') ? 'active' : '' }}"><i
                 class="bi bi-people"></i> Data Karyawan</a>
     @endif
