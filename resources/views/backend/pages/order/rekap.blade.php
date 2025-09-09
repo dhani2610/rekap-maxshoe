@@ -463,7 +463,7 @@
                             <select required name="cs_id" class="form-select form-select-sm">
                                 <option selected disabled value="">Customer Service</option>
                                 @foreach ($cs as $itemcs)
-                                    <option value="{{ $itemcs->id }}">{{ $itemcs->name }}</option>
+                                    <option value="{{ $itemcs->id }}">{{ $itemcs->nama }}</option>
                                 @endforeach
                             </select>
                         </div>

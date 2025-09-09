@@ -650,7 +650,7 @@
         <select class="form-select w-auto" id="csFilter">
             <option value="all">Semua</option>
             @foreach ($cs as $itemcs)
-                <option value="{{ $itemcs->id }}">{{ $itemcs->name }}</option>
+                <option value="{{ $itemcs->id }}">{{ $itemcs->nama }}</option>
             @endforeach
         </select>
 
