@@ -67,6 +67,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('status/{id}', 'Backend\OrderController@updateStatus')->name('order.status');
         Route::post('update/{id}', 'Backend\OrderController@update')->name('order.update');
         Route::get('destroy/{id}', 'Backend\OrderController@destroy')->name('order.destroy');
+
+        Route::get('/export-spreadsheet', 'Backend\OrderController@exportSpreadsheet')->name('order.export.spreadsheet');
+
     });
     Route::group(['prefix' => 'komisi'], function () {
         Route::get('/', 'Backend\OrderController@komisi')->name('komisi');

@@ -8,7 +8,9 @@ use App\Models\Admin;
 use App\Models\Karyawan;
 use App\Models\OrderDetail;
 use App\Models\Produk;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Revolution\Google\Sheets\Facades\Sheets;
 
 use Yajra\DataTables\Facades\DataTables;
 
@@ -20,7 +22,7 @@ class OrderController extends Controller
     public function rekap()
     {
         $data['co_host'] = Karyawan::where('status', 'active')->where('posisi', 'Co Host')->orderBy('created_at', 'desc')->get();
-        $data['host'] = Karyawan::where('status', 'active')->where('posisi', 'Host')->orderBy('created_at', 'desc')->get();
+        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host','CS'])->orderBy('created_at', 'desc')->get();
         $data['cs'] = Karyawan::where('status', 'active')->where('posisi', 'CS')->orderBy('created_at', 'desc')->get();
         $data['produk'] = Produk::orderBy('created_at', 'desc')->get();
 
@@ -29,7 +31,7 @@ class OrderController extends Controller
     public function index()
     {
         $data['co_host'] = Karyawan::where('status', 'active')->where('posisi', 'Co Host')->orderBy('created_at', 'desc')->get();
-        $data['host'] = Karyawan::where('status', 'active')->where('posisi', 'Host')->orderBy('created_at', 'desc')->get();
+        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host','CS'])->orderBy('created_at', 'desc')->get();
         $data['cs'] = Karyawan::where('status', 'active')->where('posisi', 'CS')->orderBy('created_at', 'desc')->get();
         $data['produk'] = Produk::orderBy('created_at', 'desc')->get();
 
@@ -102,6 +104,29 @@ class OrderController extends Controller
             ->rawColumns(['status', 'ubah', 'produk'])
             ->make(true);
     }
+
+
+public function exportSpreadsheet()
+{
+    $spreadsheetId = config('google.post_spreadsheet_id');
+    $sheetName = 'TEST';
+
+    // Data baru
+    $data = [
+        ['ID', 'Name'],
+        ['U001', 'John'],
+        ['U002', 'Harry'],
+    ];
+
+    // Update isi sheet mulai dari cell A1
+    Sheets::spreadsheet($spreadsheetId)
+        ->sheet($sheetName)
+        ->range('A1') // mulai tulis dari A1
+        ->update($data);
+}
+
+
+
     public function getDataAll(Request $request)
     {
         $orders = Order::with(['host', 'coHost', 'cs', 'details.produk'])
@@ -352,7 +377,7 @@ class OrderController extends Controller
     public function edit($id)
     {
         $data['co_host'] = Karyawan::where('status', 'active')->where('posisi', 'Co Host')->orderBy('created_at', 'desc')->get();
-        $data['host'] = Karyawan::where('status', 'active')->where('posisi', 'Host')->orderBy('created_at', 'desc')->get();
+        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host','CS'])->orderBy('created_at', 'desc')->get();
         $data['cs'] = Karyawan::where('status', 'active')->where('posisi', 'CS')->orderBy('created_at', 'desc')->get();
         $data['produk'] = Produk::orderBy('created_at', 'desc')->get();
         $data['order'] = Order::find($id);
