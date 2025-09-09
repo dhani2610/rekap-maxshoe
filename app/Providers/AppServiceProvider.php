@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Google\Client;
+use Google\Service\Sheets;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +18,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(Sheets::class, function ($app) {
+            $client = new Client();
+            $client->setAuthConfig(storage_path('credentials.json'));
+            $client->addScope(Sheets::SPREADSHEETS);
+            return new Sheets($client);
+        });
     }
 
     /**
@@ -34,7 +41,9 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('id');
         date_default_timezone_set('Asia/Jakarta');
 
-        Blade::directive('currency', function ( $expression ) { return "Rp. <?php echo number_format($expression,0,',','.'); ?>"; });
+        Blade::directive('currency', function ($expression) {
+            return "Rp. <?php echo number_format($expression,0,',','.'); ?>";
+        });
 
         if (env('REDIRECT_HTTPS')) {
             URL::forceScheme('https');

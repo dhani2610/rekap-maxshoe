@@ -16,13 +16,28 @@ use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
+
+    
+    public function exportSpreadsheet()
+    {
+        $append = [
+            'title' => 'Test Title',
+            'description' => 'This is dummy title'
+        ];
+        $appendSheet =        \Revolution\Google\Sheets\Facades\Sheets::spreadsheet(config('google.post_spreadsheet_id'))
+            ->sheet('Orders')
+            ->append([$append]);
+    }
+
+
+
     /**
      * Display a listing of the resource.
      */
     public function rekap()
     {
         $data['co_host'] = Karyawan::where('status', 'active')->where('posisi', 'Co Host')->orderBy('created_at', 'desc')->get();
-        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host','CS'])->orderBy('created_at', 'desc')->get();
+        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host', 'CS'])->orderBy('created_at', 'desc')->get();
         $data['cs'] = Karyawan::where('status', 'active')->where('posisi', 'CS')->orderBy('created_at', 'desc')->get();
         $data['produk'] = Produk::orderBy('created_at', 'desc')->get();
 
@@ -31,7 +46,7 @@ class OrderController extends Controller
     public function index()
     {
         $data['co_host'] = Karyawan::where('status', 'active')->where('posisi', 'Co Host')->orderBy('created_at', 'desc')->get();
-        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host','CS'])->orderBy('created_at', 'desc')->get();
+        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host', 'CS'])->orderBy('created_at', 'desc')->get();
         $data['cs'] = Karyawan::where('status', 'active')->where('posisi', 'CS')->orderBy('created_at', 'desc')->get();
         $data['produk'] = Produk::orderBy('created_at', 'desc')->get();
 
@@ -104,27 +119,6 @@ class OrderController extends Controller
             ->rawColumns(['status', 'ubah', 'produk'])
             ->make(true);
     }
-
-
-public function exportSpreadsheet()
-{
-    $spreadsheetId = config('google.post_spreadsheet_id');
-    $sheetName = 'TEST';
-
-    // Data baru
-    $data = [
-        ['ID', 'Name'],
-        ['U001', 'John'],
-        ['U002', 'Harry'],
-    ];
-
-    // Update isi sheet mulai dari cell A1
-    Sheets::spreadsheet($spreadsheetId)
-        ->sheet($sheetName)
-        ->range('A1') // mulai tulis dari A1
-        ->update($data);
-}
-
 
 
     public function getDataAll(Request $request)
@@ -346,10 +340,17 @@ public function exportSpreadsheet()
             $totalItem += $jumlah;
         }
 
+        $host = Karyawan::find($request->host_id);
+
+        if ($host->posisi == 'CS') {
+            $tambahanKomisiDariHost = floor($omzet * 0.01;
+        }else{
+            $tambahanKomisiDariHost = 0;
+        }
         // hitung komisi
-        $komisiHost    = floor($omzet * 0.01); // 1% dari omzet
+        $komisiHost    = floor($omzet * 0.01    ); // 1% dari omzet
         $komisiCoHost  = $totalItem * 2000;
-        $komisiCS      = $totalItem * 2000;
+        $komisiCS      = ($totalItem * 2000) + $tambahanKomisiDariHost;
 
         // update order dengan komisi
         $order->update([
@@ -377,7 +378,7 @@ public function exportSpreadsheet()
     public function edit($id)
     {
         $data['co_host'] = Karyawan::where('status', 'active')->where('posisi', 'Co Host')->orderBy('created_at', 'desc')->get();
-        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host','CS'])->orderBy('created_at', 'desc')->get();
+        $data['host'] = Karyawan::where('status', 'active')->whereIn('posisi', ['Host', 'CS'])->orderBy('created_at', 'desc')->get();
         $data['cs'] = Karyawan::where('status', 'active')->where('posisi', 'CS')->orderBy('created_at', 'desc')->get();
         $data['produk'] = Produk::orderBy('created_at', 'desc')->get();
         $data['order'] = Order::find($id);
@@ -470,15 +471,25 @@ public function exportSpreadsheet()
             }
 
             // hitung ulang komisi
-            $komisiHost    = floor($omzet * 0.01);
-            $komisiCoHost  = $totalItem * 2000;
-            $komisiCS      = $totalItem * 2000;
+            $host = Karyawan::find($request->host_id);
 
+            if ($host->posisi == 'CS') {
+                $tambahanKomisiDariHost = floor($omzet * 0.01;
+            }else{
+                $tambahanKomisiDariHost = 0;
+            }
+            // hitung komisi
+            $komisiHost    = floor($omzet * 0.01    ); // 1% dari omzet
+            $komisiCoHost  = $totalItem * 2000;
+            $komisiCS      = ($totalItem * 2000) + $tambahanKomisiDariHost;
+
+            // update order dengan komisi
             $order->update([
                 'komisi_host'     => $komisiHost,
                 'komisi_co_host'  => $komisiCoHost,
                 'komisi_cs'       => $komisiCS,
             ]);
+
 
             return redirect()->route('order.data.rekap')->with('success', 'Order berhasil diperbarui');
         } catch (\Throwable $th) {

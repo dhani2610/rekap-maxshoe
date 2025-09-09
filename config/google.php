@@ -8,7 +8,7 @@ return [
 
     'service' => [
         'enable' => env('GOOGLE_SERVICE_ENABLED', true),
-        'file'   => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION'),
+        'file'   => storage_path('credentials.json'),
     ],
 
     'post_spreadsheet_id' => env('POST_SPREADSHEET_ID'),
