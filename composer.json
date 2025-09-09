@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
         "maatwebsite/excel": "^3.1",
+        "revolution/laravel-google-sheets": "^7.1",
         "riskihajar/terbilang": "^2.0",
         "spatie/laravel-permission": "^6.4",
         "yajra/laravel-datatables-oracle": "^11.1"

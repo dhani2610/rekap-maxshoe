@@ -653,7 +653,7 @@
                 <option value="{{ $itemcs->id }}">{{ $itemcs->name }}</option>
             @endforeach
         </select>
-        
+
         <input type="hidden" id="startDate">
         <input type="hidden" id="endDate">
     </div>
@@ -690,7 +690,7 @@
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="2 2 15 15">
                     <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1 14.7l-5-5
-                                              1.4-1.4L11 13.9l5.6-5.6 1.4 1.4-7 7z" />
+                                                  1.4-1.4L11 13.9l5.6-5.6 1.4 1.4-7 7z" />
                 </svg>
             </div>
 
@@ -743,6 +743,28 @@
                 </svg>
             </div>
         </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap" style="margin-top: 4px; margin-bottom: -30px;">
+        <div class="search-wrapper d-flex align-items-center"
+            style="border: 1px solid #ccc; border-radius: 6px; padding: 0px 8px; margin: 0px 5px;background: white; max-width: 220px; width: 100%;">
+            <input type="text" class="form-control form-control-sm border-0 shadow-none" placeholder="Search...">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#0a53be" class="ms-2"
+                viewBox="0 0 16 16">
+                <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.106a5 5 0 1 1 0-10 5 5 0 0 1 0 10z">
+                </path>
+            </svg>
+        </div>
+
+        <button class="filter-button2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 24 24">
+                <path
+                    d="M5 20h14v-2H5Zm7-18a1 1 0 0 1 1 1v12.17l3.59-3.58L18 13l-6 6-6-6 1.41-1.41L11 15.17V3a1 1 0 0 1 1-1Z">
+                </path>
+            </svg>
+            Download Data
+        </button>
     </div>
 
     <div class="mt-5">
@@ -925,7 +947,7 @@
                         table.search(this.value).draw();
                     });
 
-                    
+
                     // 🔹 Trigger filter
                     $('#startDate, #endDate, #statusFilter, #csFilter').on('change', function() {
                         table.draw();
@@ -934,44 +956,44 @@
                 });
 
                 function loadRekap() {
-                        $.ajax({
-                            url: "{{ route('order.rekap.data.json') }}",
-                            data: {
-                                start_date: $('#startDate').val(),
-                                end_date: $('#endDate').val(),
-                                status: $('#statusFilter').val(),
-                                cs: $('#csFilter').val()
-                            },
-                            success: function(res) {
-                                console.log(res);
+                    $.ajax({
+                        url: "{{ route('order.rekap.data.json') }}",
+                        data: {
+                            start_date: $('#startDate').val(),
+                            end_date: $('#endDate').val(),
+                            status: $('#statusFilter').val(),
+                            cs: $('#csFilter').val()
+                        },
+                        success: function(res) {
+                            console.log(res);
 
-                                $('.summary-card:contains("Diproses") h3').html(res.diproses.count +
-                                    " <span>Item <b>Diproses</b></span>");
-                                $('.summary-card:contains("Diproses") h4').text("Rp " + res.diproses.omzet
-                                    .toLocaleString());
+                            $('.summary-card:contains("Diproses") h3').html(res.diproses.count +
+                                " <span>Item <b>Diproses</b></span>");
+                            $('.summary-card:contains("Diproses") h4').text("Rp " + res.diproses.omzet
+                                .toLocaleString());
 
-                                $('.summary-card:contains("LUNAS") h3').html(res.lunas.count +
-                                    " <span>Item <b>LUNAS</b></span>");
-                                $('.summary-card:contains("LUNAS") h4').text("Rp " + res.lunas.omzet
-                                    .toLocaleString());
+                            $('.summary-card:contains("LUNAS") h3').html(res.lunas.count +
+                                " <span>Item <b>LUNAS</b></span>");
+                            $('.summary-card:contains("LUNAS") h4').text("Rp " + res.lunas.omzet
+                                .toLocaleString());
 
-                                $('.summary-card:contains("DOWN PAYMENT") h3').html(res.dp.count +
-                                    " <span>Item <b>DOWN PAYMENT</b></span>");
-                                $('.summary-card:contains("DOWN PAYMENT") h4').text("Rp " + res.dp.omzet
-                                    .toLocaleString());
+                            $('.summary-card:contains("DOWN PAYMENT") h3').html(res.dp.count +
+                                " <span>Item <b>DOWN PAYMENT</b></span>");
+                            $('.summary-card:contains("DOWN PAYMENT") h4').text("Rp " + res.dp.omzet
+                                .toLocaleString());
 
-                                $('.summary-card:contains("PRE ORDER") h3').html(res.po.count +
-                                    " <span>Item <b>PRE ORDER</b></span>");
-                                $('.summary-card:contains("PRE ORDER") h4').text("Rp " + res.po.omzet
-                                    .toLocaleString());
+                            $('.summary-card:contains("PRE ORDER") h3').html(res.po.count +
+                                " <span>Item <b>PRE ORDER</b></span>");
+                            $('.summary-card:contains("PRE ORDER") h4').text("Rp " + res.po.omzet
+                                .toLocaleString());
 
-                                $('.summary-card:contains("SHOPEE") h3').html(res.shopee.count +
-                                    " <span>Item <b>SHOPEE</b></span>");
-                                $('.summary-card:contains("SHOPEE") h4').text("Rp " + res.shopee.omzet
-                                    .toLocaleString());
-                            }
-                        });
-                    }
+                            $('.summary-card:contains("SHOPEE") h3').html(res.shopee.count +
+                                " <span>Item <b>SHOPEE</b></span>");
+                            $('.summary-card:contains("SHOPEE") h4').text("Rp " + res.shopee.omzet
+                                .toLocaleString());
+                        }
+                    });
+                }
 
 
                 function showPopup(id) {

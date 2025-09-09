@@ -1,19 +1,2 @@
-# Laravel defaults
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
-
-# Laravel environment files
 .env
-.env.backup
-.env.local
-.env.*.local
-
-# Ignore service account keys
-*.json
-
-# OS files
-.DS_Store
-Thumbs.db
+/vendor
