@@ -343,7 +343,7 @@ class OrderController extends Controller
         $host = Karyawan::find($request->host_id);
 
         if ($host->posisi == 'CS') {
-            $tambahanKomisiDariHost = floor($omzet * 0.01;
+            $tambahanKomisiDariHost = floor($omzet * 0.01);
         }else{
             $tambahanKomisiDariHost = 0;
         }
@@ -474,7 +474,7 @@ class OrderController extends Controller
             $host = Karyawan::find($request->host_id);
 
             if ($host->posisi == 'CS') {
-                $tambahanKomisiDariHost = floor($omzet * 0.01;
+                $tambahanKomisiDariHost = floor($omzet * 0.01);
             }else{
                 $tambahanKomisiDariHost = 0;
             }
