@@ -579,52 +579,54 @@ class OrderController extends Controller
             $karyawanIds[] = $id;
         }
 
-        $karyawanList = \App\Models\Karyawan::whereIn('id', $karyawanIds)->get()->keyBy('id');
+        $karyawanList = \App\Models\Karyawan::where('status','active')->whereIn('id', $karyawanIds)->get()->keyBy('id');
 
         $ranking = [];
         foreach ($summary['karyawan'] as $id => $data) {
             if (isset($karyawanList[$id])) {
-                $kar = $karyawanList[$id];
-                $nama = $kar->nama;
-                $posisi = $kar->posisi;
-                $foto = asset('assets/img/karyawan/' . ($kar->foto ?? 'default.png'));
-            } else {
-                $nama = "Unknown";
-                $posisi = "-";
-                $foto = asset('assets/img/karyawan/6646489.png');
+                if (isset($karyawanList[$id])) {
+                    $kar = $karyawanList[$id];
+                    $nama = $kar->nama;
+                    $posisi = $kar->posisi;
+                    $foto = asset('assets/img/karyawan/' . ($kar->foto ?? 'default.png'));
+                } else {
+                    $nama = "Unknown";
+                    $posisi = "-";
+                    $foto = asset('assets/img/karyawan/6646489.png');
+                }
+    
+                // Hitung omzet, item, komisi sesuai posisi
+                if ($data['posisi'] === 'HOST') {
+                    $getOrder = Order::where('host_id', $data['id'])->pluck('id');
+                    $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
+                    $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
+                    $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_host');
+                } elseif ($data['posisi'] === 'CO HOST') {
+                    $getOrder = Order::where('co_host_id', $data['id'])->pluck('id');
+                    $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
+                    $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
+                    $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_co_host');
+                } elseif ($data['posisi'] === 'CS') {
+                    $getOrder = Order::where('cs_id', $data['id'])->pluck('id');
+                    $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
+                    $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
+                    $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_cs');
+                } else {
+                    $getItemOrder = 0;
+                    $getOmzetOrder = 0;
+                    $getKomisiOrder = 0;
+                }
+    
+                $ranking[] = [
+                    'id' => $id,
+                    'nama' => $nama,
+                    'posisi' => $posisi,
+                    'foto' => $foto,
+                    'omzet_raw' => $getOmzetOrder,
+                    'item' => $getItemOrder,
+                    'komisi_raw' => $getKomisiOrder,
+                ];
             }
-
-            // Hitung omzet, item, komisi sesuai posisi
-            if ($data['posisi'] === 'HOST') {
-                $getOrder = Order::where('host_id', $data['id'])->pluck('id');
-                $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
-                $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
-                $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_host');
-            } elseif ($data['posisi'] === 'CO HOST') {
-                $getOrder = Order::where('co_host_id', $data['id'])->pluck('id');
-                $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
-                $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
-                $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_co_host');
-            } elseif ($data['posisi'] === 'CS') {
-                $getOrder = Order::where('cs_id', $data['id'])->pluck('id');
-                $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
-                $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
-                $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_cs');
-            } else {
-                $getItemOrder = 0;
-                $getOmzetOrder = 0;
-                $getKomisiOrder = 0;
-            }
-
-            $ranking[] = [
-                'id' => $id,
-                'nama' => $nama,
-                'posisi' => $posisi,
-                'foto' => $foto,
-                'omzet_raw' => $getOmzetOrder,
-                'item' => $getItemOrder,
-                'komisi_raw' => $getKomisiOrder,
-            ];
         }
 
         // Urutkan berdasarkan omzet
