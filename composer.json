@@ -10,8 +10,8 @@
     "require": {
         "php": "^8.2",
         "dompdf/dompdf": "^3.0",
-        "google/apiclient": "^2.18",
-        "google/apiclient-services": "^0.411.0",
+        "google/apiclient": "2.16",
+        "google/apiclient-services": "0.411",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",

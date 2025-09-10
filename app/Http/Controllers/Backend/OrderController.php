@@ -10,26 +10,10 @@ use App\Models\OrderDetail;
 use App\Models\Produk;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Revolution\Google\Sheets\Facades\Sheets;
-
 use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
-
-
-    public function exportSpreadsheet()
-    {
-        $append = [
-            'title' => 'Test Title',
-            'description' => 'This is dummy title'
-        ];
-        $appendSheet =        \Revolution\Google\Sheets\Facades\Sheets::spreadsheet(config('google.post_spreadsheet_id'))
-            ->sheet('Orders')
-            ->append([$append]);
-    }
-
-
 
     /**
      * Display a listing of the resource.
@@ -119,6 +103,68 @@ class OrderController extends Controller
             ->rawColumns(['status', 'ubah', 'produk'])
             ->make(true);
     }
+
+    public function dataGoogleSheets()
+    {
+        $orders = Order::with(['host', 'coHost', 'cs', 'details.produk'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Format array sesuai kebutuhan export ke Google Sheets
+        $data = $orders->map(function ($row, $index) {
+            $total = $row->details->sum(fn($detail) => $detail->harga);
+
+            return [
+                $index + 1, // No
+                str_pad($row->id, 4, '0', STR_PAD_LEFT), // Order ID
+                $row->created_at->format('d-m-Y'), // Tanggal
+                $row->status,
+                $row->host->nama ?? '-',
+                $row->coHost->nama ?? '-',
+                $row->cs->nama ?? '-',
+                $row->details->pluck('produk.nama_produk')->implode(', '), // Produk list
+                $row->details->sum('jumlah'), // Jumlah total
+                'Rp ' . number_format($total, 0, ',', '.'), // Total harga produk
+                $row->ekspedisi,
+                $row->berat,
+                number_format($row->ongkir, 0, ',', '.'),
+                number_format($row->total_transfer, 0, ',', '.'),
+                $row->atas_nama,
+                $row->bank_transfer,
+                $row->nama_penerima,
+                $row->nomor_hp,
+                $row->alamat,
+                $row->kodepos,
+            ];
+        });
+
+        // Tambahkan header di paling atas
+        $header = [[
+            'No',
+            'Order ID',
+            'Tanggal',
+            'Status',
+            'Host',
+            'Co-Host',
+            'CS',
+            'Produk',
+            'Jumlah',
+            'Harga',
+            'Ekspedisi',
+            'Berat',
+            'Ongkir',
+            'Total Transfer',
+            'Atas Nama',
+            'Bank Transfer',
+            'Nama Penerima',
+            'No HP',
+            'Alamat',
+            'Kode Pos',
+        ]];
+
+        return response()->json(array_merge($header, $data->toArray()));
+    }
+
 
 
     public function getDataAll(Request $request)
@@ -550,7 +596,7 @@ class OrderController extends Controller
             $summary['total_omzet'] += $omzetOrder;
             $summary['total_item'] += $itemOrder;
             $summary['total_komisi'] += $order->komisi_host + $order->komisi_co_host + $order->komisi_cs;
-            
+
             if ($order->host_id) {
                 $checkUserByPosisi = Karyawan::find($order->host_id);
                 if ($checkUserByPosisi && $checkUserByPosisi->posisi == 'Host') {

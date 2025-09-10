@@ -58,6 +58,7 @@ Route::group(['prefix' => 'admin'], function () {
     });
     Route::group(['prefix' => 'order'], function () {
         Route::get('/rekap', 'Backend\OrderController@rekap')->name('order.data.rekap');
+        Route::get('/data-google-sheets', 'Backend\OrderController@dataGoogleSheets')->name('data-google-sheets');
         Route::get('/', 'Backend\OrderController@index')->name('order');
         Route::get('/data', 'Backend\OrderController@getData')->name('order.data'); // <- untuk yajra
         Route::get('/rekap-data-json', 'Backend\OrderController@rekapDataJson')->name('order.rekap.data.json'); // <- untuk yajra

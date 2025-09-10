@@ -230,7 +230,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Terbilang' => Riskihajar\Terbilang\Facades\Terbilang::class,
 
-
     ],
 
 ];

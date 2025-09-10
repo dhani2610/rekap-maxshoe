@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Google\Client;
-use Google\Service\Sheets;
+use Google\Service\Sheets as GoogleSheets;
+use Revolution\Google\Sheets\Sheets;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,11 +19,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Sheets::class, function ($app) {
+        $this->app->singleton(GoogleSheets::class, function ($app) {
             $client = new Client();
+            $client->setApplicationName(config('google.application_name'));
+            $client->setScopes([GoogleSheets::SPREADSHEETS]);
             $client->setAuthConfig(storage_path('credentials.json'));
-            $client->addScope(Sheets::SPREADSHEETS);
-            return new Sheets($client);
+            $client->setAccessType('offline');
+
+            return new GoogleSheets($client);
+        });
+
+        $this->app->singleton(Sheets::class, function ($app) {
+            return new Sheets($app->make(GoogleSheets::class));
         });
     }
 

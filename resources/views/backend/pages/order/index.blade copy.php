@@ -690,7 +690,7 @@
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="2 2 15 15">
                     <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1 14.7l-5-5
-                                                                              1.4-1.4L11 13.9l5.6-5.6 1.4 1.4-7 7z" />
+                                                                      1.4-1.4L11 13.9l5.6-5.6 1.4 1.4-7 7z" />
                 </svg>
             </div>
 
@@ -763,7 +763,7 @@
                     d="M5 20h14v-2H5Zm7-18a1 1 0 0 1 1 1v12.17l3.59-3.58L18 13l-6 6-6-6 1.41-1.41L11 15.17V3a1 1 0 0 1 1-1Z">
                 </path>
             </svg>
-            Sinkron Data Google Sheet
+            Download Data
         </button>
     </div>
 
@@ -1096,8 +1096,8 @@
                         values
                     };
 
+
                     try {
-                        // 1. Isi data
                         await gapi.client.sheets.spreadsheets.values.update({
                             spreadsheetId: SPREADSHEET_ID,
                             range: SHEET_NAME + "!A1",
@@ -1105,225 +1105,21 @@
                             resource: body,
                         });
 
-                        // 2. Styling pakai batchUpdate
-                        await gapi.client.sheets.spreadsheets.batchUpdate({
-                            spreadsheetId: SPREADSHEET_ID,
-                            resource: {
-                                requests: [
-                                    // Header hijau khusus H1 - T1
-                                    {
-                                        repeatCell: {
-                                            range: {
-                                                sheetId: 0,
-                                                startRowIndex: 0,
-                                                endRowIndex: 1,
-                                                startColumnIndex: 0, // H = 7
-                                                endColumnIndex: 20 // T = 19 + 1
-                                            },
-                                            cell: {
-                                                userEnteredFormat: {
-                                                    backgroundColor: {
-                                                        red: 0.2,
-                                                        green: 0.7,
-                                                        blue: 0.2
-                                                    },
-                                                    horizontalAlignment: "CENTER",
-                                                    textFormat: {
-                                                        foregroundColor: {
-                                                            red: 1,
-                                                            green: 1,
-                                                            blue: 1
-                                                        },
-                                                        bold: true
-                                                    },
-                                                    wrapStrategy: "WRAP"
-                                                }
-                                            },
-                                            fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,wrapStrategy)"
-                                        }
-                                    },
-                                    // Auto wrap semua cell
-                                    {
-                                        repeatCell: {
-                                            range: {
-                                                sheetId: 0
-                                            },
-                                            cell: {
-                                                userEnteredFormat: {
-                                                    wrapStrategy: "WRAP"
-                                                }
-                                            },
-                                            fields: "userEnteredFormat.wrapStrategy"
-                                        }
-                                    },
-                                  // Setting width kolom A - T
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 0, endIndex: 1 }, // A = No
-                                            properties: { pixelSize: 50 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 1, endIndex: 2 }, // B = Order ID
-                                            properties: { pixelSize: 100 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 2, endIndex: 3 }, // C = Tanggal
-                                            properties: { pixelSize: 120 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 3, endIndex: 4 }, // D = Status
-                                            properties: { pixelSize: 120 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 4, endIndex: 5 }, // E = Host
-                                            properties: { pixelSize: 150 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 5, endIndex: 6 }, // F = Co-Host
-                                            properties: { pixelSize: 150 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 6, endIndex: 7 }, // G = CS
-                                            properties: { pixelSize: 150 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 7, endIndex: 8 }, // H = Produk
-                                            properties: { pixelSize: 120 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 8, endIndex: 9 }, // I = Jumlah
-                                            properties: { pixelSize: 80 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 9, endIndex: 10 }, // J = Harga
-                                            properties: { pixelSize: 120 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 10, endIndex: 11 }, // K = Ekspedisi
-                                            properties: { pixelSize: 120 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 11, endIndex: 12 }, // L = Berat
-                                            properties: { pixelSize: 80 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 12, endIndex: 13 }, // M = Ongkir
-                                            properties: { pixelSize: 120 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 13, endIndex: 14 }, // N = Total Transfer
-                                            properties: { pixelSize: 150 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 14, endIndex: 15 }, // O = Atas Nama
-                                            properties: { pixelSize: 150 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 15, endIndex: 16 }, // P = Bank Transfer
-                                            properties: { pixelSize: 120 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 16, endIndex: 17 }, // Q = Nama Penerima
-                                            properties: { pixelSize: 200 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 17, endIndex: 18 }, // R = No HP
-                                            properties: { pixelSize: 150 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 18, endIndex: 19 }, // S = Alamat
-                                            properties: { pixelSize: 300 },
-                                            fields: "pixelSize"
-                                        }
-                                    },
-                                    {
-                                        updateDimensionProperties: {
-                                            range: { sheetId: 0, dimension: "COLUMNS", startIndex: 19, endIndex: 20 }, // T = Kode Pos
-                                            properties: { pixelSize: 100 },
-                                            fields: "pixelSize"
-                                        }
-                                    }
-
-                                ]
-                            }
-                        });
-
-
-                        // 3. Notifikasi
                         Swal.fire({
                             icon: "success",
                             title: "Berhasil!",
-                            text: "Data berhasil sinkron ke Google Sheets!",
+                            text: "Data berhasil dikirim ke Google Sheets!",
                             confirmButtonText: "Buka Sheet"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                let url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID +
-                                    "/edit";
+                                let url = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/edit";
                                 window.open(url, "_blank");
                             }
                         });
 
                     } catch (err) {
                         console.error("Error:", err);
-                        Swal.fire({
-                            icon: "error",
-                            title: "Gagal!",
-                            text: "❌ Upload ke Google Sheets gagal!"
-                        });
+                        alert("❌ Gagal upload ke Google Sheets");
                     }
                 };
 
