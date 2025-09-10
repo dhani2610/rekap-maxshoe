@@ -24,14 +24,15 @@
                 class="bi bi-people"></i> Statistik</a>
     @endif
 
-    @if ($usr->can('karywan.view'))
-        <a href="{{ route('karyawan') }}" class="{{ request()->routeIs('karyawan') ? 'active' : '' }}"><i
-                class="bi bi-people"></i> Data Karyawan</a>
-    @endif
-
     @if ($usr->can('komisi.view'))
         <a href="{{ route('komisi') }}" class="{{ request()->routeIs('komisi') ? 'active' : '' }}"><i
                 class="bi bi-gear"></i> Komisi</a>
+    @endif
+
+    
+    @if ($usr->can('karywan.view'))
+        <a href="{{ route('karyawan') }}" class="{{ request()->routeIs('karyawan') ? 'active' : '' }}"><i
+                class="bi bi-people"></i> Data Karyawan</a>
     @endif
 
     @if ($usr->can('produk.view'))

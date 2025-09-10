@@ -305,6 +305,21 @@
             padding-left: 0;
             padding-right: 0;
         }
+
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            /* supaya card baru pindah ke baris bawah */
+            gap: 20px;
+        }
+
+        /* Maksimal 2 kartu per baris */
+        .employee-card {
+            flex: 0 0 calc(50% - 10px);
+            /* 50% width minus half of gap */
+            min-width: 300px;
+            /* optional, supaya card tidak terlalu kecil */
+        }
     </style>
 
     <h4 class="page-title mb-4">KOMISI KARYAWAN</h4>
@@ -383,7 +398,7 @@
                 </tr>
             </thead>
             <tbody>
-            
+
             </tbody>
         </table>
     </div>
