@@ -10,10 +10,21 @@ use App\Models\OrderDetail;
 use App\Models\Produk;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!Auth::guard('admin')->check()) {
+                return redirect()->route('admin.login');
+            }
+            return $next($request);
+        });
+    }
 
     /**
      * Display a listing of the resource.
@@ -765,7 +776,12 @@ class OrderController extends Controller
         $totalProduk = $orders->flatMap->details->sum('jumlah');
         $totalOmzet = $orders->flatMap->details->sum('harga');
         $totalOngkir = $orders->sum('ongkir');
-        $totalCustomer = $orders->pluck('nama_penerima')->unique()->count();
+        // $totalCustomer = $orders->pluck('nama_penerima')->unique()->count();
+        $totalCustomer = $orders->map(function ($order) {
+            return $order->nama_penerima . '|' . $order->nomor_hp; // gabungkan jadi satu string unik
+        })
+        ->unique()
+        ->count();
         $pending = $orders->whereIn('status', ['COD', 'PO', 'SHOPEE'])->count();
 
         // === NEW: Rata-rata harian ===

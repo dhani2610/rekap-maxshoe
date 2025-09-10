@@ -5,10 +5,20 @@ namespace App\Http\Controllers\Backend;
 use App\Models\Karyawan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class KaryawanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!Auth::guard('admin')->check()) {
+                return redirect()->route('admin.login');
+            }
+            return $next($request);
+        });
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {

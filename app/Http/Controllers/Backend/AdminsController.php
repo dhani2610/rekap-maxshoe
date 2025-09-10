@@ -17,6 +17,10 @@ class AdminsController extends Controller
     {
         $this->middleware(function ($request, $next) {
             $this->user = Auth::guard('admin')->user();
+
+            if (!Auth::guard('admin')->check()) {
+                return redirect()->route('admin.login');
+            }
             return $next($request);
         });
     }

@@ -19,7 +19,7 @@
             {{-- <span class="app-brand-logo demo">
 
       </span> --}}
-            <img src="{{ asset('assets/img/logos/logo.png') }}" style="max-width: 40%">
+            <img src="{{ asset('assets/img/logos/6646489.png') }}" style="max-width: 40%">
             <span class=" demo fw-bold ms-2" style="color: white">Dashboard</span>
         </a>
 

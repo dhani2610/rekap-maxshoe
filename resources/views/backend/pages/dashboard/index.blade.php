@@ -20,7 +20,7 @@ Dashboard Page - Admin Panel
               <h1>Welcome Back</h1>
             </center>
             <center>
-              <img src="{{ asset('assets/img/logos/logo.png') }}" style="max-width: 15%">
+              <img src="{{ asset('assets/img/logos/6646489.png') }}" style="max-width: 15%">
             </center>
           </div>
         </div>
