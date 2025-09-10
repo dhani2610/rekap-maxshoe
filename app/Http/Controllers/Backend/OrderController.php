@@ -550,24 +550,35 @@ class OrderController extends Controller
             $summary['total_omzet'] += $omzetOrder;
             $summary['total_item'] += $itemOrder;
             $summary['total_komisi'] += $order->komisi_host + $order->komisi_co_host + $order->komisi_cs;
-
+            
             if ($order->host_id) {
-                $summary['karyawan'][$order->host_id] = [
-                    'id' => $order->host_id,
-                    'posisi' => 'HOST',
-                ];
+                $checkUserByPosisi = Karyawan::find($order->host_id);
+                if ($checkUserByPosisi && $checkUserByPosisi->posisi == 'Host') {
+                    $summary['karyawan'][$order->host_id] = [
+                        'id' => $order->host_id,
+                        'posisi' => 'HOST',
+                    ];
+                }
             }
+
             if ($order->co_host_id) {
-                $summary['karyawan'][$order->co_host_id] = [
-                    'id' => $order->co_host_id,
-                    'posisi' => 'CO HOST',
-                ];
+                $checkUserByPosisi = Karyawan::find($order->co_host_id);
+                if ($checkUserByPosisi && $checkUserByPosisi->posisi == 'Co Host') {
+                    $summary['karyawan'][$order->co_host_id] = [
+                        'id' => $order->co_host_id,
+                        'posisi' => 'CO HOST',
+                    ];
+                }
             }
+
             if ($order->cs_id) {
-                $summary['karyawan'][$order->cs_id] = [
-                    'id' => $order->cs_id,
-                    'posisi' => 'CS',
-                ];
+                $checkUserByPosisi = Karyawan::find($order->cs_id);
+                if ($checkUserByPosisi && $checkUserByPosisi->posisi == 'CS') {
+                    $summary['karyawan'][$order->cs_id] = [
+                        'id' => $order->cs_id,
+                        'posisi' => 'CS',
+                    ];
+                }
             }
         }
 
@@ -637,7 +648,6 @@ class OrderController extends Controller
         }
 
         // Ambil top 2 per posisi, sudah sorted descending
-        // Ambil top 2 per posisi berdasarkan komisi_raw descending
         $topHosts = collect($rankingByPosisi['HOST'])
             ->sortByDesc('komisi_raw')
             ->take(2)
