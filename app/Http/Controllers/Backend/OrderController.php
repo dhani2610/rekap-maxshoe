@@ -17,7 +17,7 @@ use Yajra\DataTables\Facades\DataTables;
 class OrderController extends Controller
 {
 
-    
+
     public function exportSpreadsheet()
     {
         $append = [
@@ -344,11 +344,11 @@ class OrderController extends Controller
 
         if ($host->posisi == 'CS') {
             $tambahanKomisiDariHost = floor($omzet * 0.01);
-        }else{
+        } else {
             $tambahanKomisiDariHost = 0;
         }
         // hitung komisi
-        $komisiHost    = floor($omzet * 0.01    ); // 1% dari omzet
+        $komisiHost    = floor($omzet * 0.01); // 1% dari omzet
         $komisiCoHost  = $totalItem * 2000;
         $komisiCS      = ($totalItem * 2000) + $tambahanKomisiDariHost;
 
@@ -475,11 +475,11 @@ class OrderController extends Controller
 
             if ($host->posisi == 'CS') {
                 $tambahanKomisiDariHost = floor($omzet * 0.01);
-            }else{
+            } else {
                 $tambahanKomisiDariHost = 0;
             }
             // hitung komisi
-            $komisiHost    = floor($omzet * 0.01    ); // 1% dari omzet
+            $komisiHost    = floor($omzet * 0.01); // 1% dari omzet
             $komisiCoHost  = $totalItem * 2000;
             $komisiCS      = ($totalItem * 2000) + $tambahanKomisiDariHost;
 
@@ -522,146 +522,6 @@ class OrderController extends Controller
     {
         return view('backend.pages.komisi.index');
     }
-
-    // public function getDataKomisi(Request $request)
-    // {
-    //     $query = Order::with('details'); // relasi: details
-
-    //     // Filter tanggal
-    //     if ($request->start_date && $request->end_date) {
-    //         $query->whereBetween('created_at', [
-    //             $request->start_date . " 00:00:00",
-    //             $request->end_date . " 23:59:59"
-    //         ]);
-    //     }
-
-    //     $orders = $query->get();
-
-    //     $summary = [
-    //         'total_omzet' => 0,
-    //         'total_item' => 0,
-    //         'total_komisi' => 0,
-    //         'karyawan' => []
-    //     ];
-
-    //     foreach ($orders as $order) {
-    //         $omzetOrder = $order->details->sum(fn($d) => $d->harga);
-    //         $itemOrder = $order->details->sum('jumlah');
-
-    //         $summary['total_omzet'] += $omzetOrder;
-    //         $summary['total_item'] += $itemOrder;
-    //         $summary['total_komisi'] += $order->komisi_host + $order->komisi_co_host + $order->komisi_cs;
-
-    //         if ($order->host_id) {
-    //             $summary['karyawan'][$order->host_id] = [
-    //                 'id' => $order->host_id,
-    //                 'posisi' => 'HOST',
-    //             ];
-    //         }
-    //         if ($order->co_host_id) {
-    //             $summary['karyawan'][$order->co_host_id] = [
-    //                 'id' => $order->co_host_id,
-    //                 'posisi' => 'CO HOST',
-    //             ];
-    //         }
-    //         if ($order->cs_id) {
-    //             $summary['karyawan'][$order->cs_id] = [
-    //                 'id' => $order->cs_id,
-    //                 'posisi' => 'CS',
-    //             ];
-    //         }
-    //     }
-
-    //     // Ambil data host & co-host dari tabel karyawan
-    //     $karyawanIds = [];
-
-    //     foreach ($summary['karyawan'] as $id => $data) {
-    //         $karyawanIds[] = $id;
-    //     }
-
-    //     $karyawanList = \App\Models\Karyawan::where('status','active')->whereIn('id', $karyawanIds)->get()->keyBy('id');
-
-    //     $ranking = [];
-    //     foreach ($summary['karyawan'] as $id => $data) {
-    //         if (isset($karyawanList[$id])) {
-    //             if (isset($karyawanList[$id])) {
-    //                 $kar = $karyawanList[$id];
-    //                 $nama = $kar->nama;
-    //                 $posisi = $kar->posisi;
-    //                 $foto = asset('assets/img/karyawan/' . ($kar->foto ?? 'default.png'));
-    //             } else {
-    //                 $nama = "Unknown";
-    //                 $posisi = "-";
-    //                 $foto = asset('assets/img/karyawan/6646489.png');
-    //             }
-    
-    //             // Hitung omzet, item, komisi sesuai posisi
-    //             if ($data['posisi'] === 'HOST') {
-    //                 $getOrder = Order::where('host_id', $data['id'])->pluck('id');
-    //                 $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
-    //                 $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
-    //                 $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_host');
-    //             } elseif ($data['posisi'] === 'CO HOST') {
-    //                 $getOrder = Order::where('co_host_id', $data['id'])->pluck('id');
-    //                 $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
-    //                 $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
-    //                 $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_co_host');
-    //             } elseif ($data['posisi'] === 'CS') {
-    //                 $getOrder = Order::where('cs_id', $data['id'])->pluck('id');
-    //                 $getItemOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('jumlah');
-    //                 $getOmzetOrder = OrderDetail::whereIn('order_id', $getOrder)->sum('harga');
-    //                 $getKomisiOrder = Order::whereIn('id', $getOrder)->sum('komisi_cs');
-    //             } else {
-    //                 $getItemOrder = 0;
-    //                 $getOmzetOrder = 0;
-    //                 $getKomisiOrder = 0;
-    //             }
-    
-    //             $ranking[] = [
-    //                 'id' => $id,
-    //                 'nama' => $nama,
-    //                 'posisi' => $posisi,
-    //                 'foto' => $foto,
-    //                 'omzet_raw' => $getOmzetOrder,
-    //                 'item' => $getItemOrder,
-    //                 'komisi_raw' => $getKomisiOrder,
-    //             ];
-    //         }
-    //     }
-
-    //     // Urutkan berdasarkan omzet
-    //     usort($ranking, fn($a, $b) => $b['omzet_raw'] <=> $a['omzet_raw']);
-
-    //     // Ambil Top 2 & Top 3
-    //     $topEmployees = array_slice($ranking, 0, 2);
-    //     // $rankingTop3 = array_slice($ranking, 0, 3);
-    //     $rankingTop3 = $ranking;
-
-    //     // Format angka setelah sorting
-    //     $topEmployees = array_map(function ($r) {
-    //         $r['omzet'] = number_format($r['omzet_raw'], 0, ',', '.');
-    //         $r['komisi'] = number_format($r['komisi_raw'], 0, ',', '.');
-    //         unset($r['omzet_raw'], $r['komisi_raw']);
-    //         return $r;
-    //     }, $topEmployees);
-
-    //     $rankingTop3 = array_map(function ($r) {
-    //         $r['omzet'] = number_format($r['omzet_raw'], 0, ',', '.');
-    //         $r['komisi'] = number_format($r['komisi_raw'], 0, ',', '.');
-    //         unset($r['omzet_raw'], $r['komisi_raw']);
-    //         return $r;
-    //     }, $rankingTop3);
-
-    //     return response()->json([
-    //         'summary' => [
-    //             'total_omzet' => number_format($summary['total_omzet'], 0, ',', '.'),
-    //             'total_item' => $summary['total_item'],
-    //             'total_komisi' => number_format($summary['total_komisi'], 0, ',', '.'),
-    //         ],
-    //         'employee_card' => $topEmployees,
-    //         'ranking' => $rankingTop3
-    //     ]);
-    // }
 
     public function getDataKomisi(Request $request)
     {
@@ -712,7 +572,7 @@ class OrderController extends Controller
         }
 
         $karyawanIds = array_keys($summary['karyawan']);
-        $karyawanList = \App\Models\Karyawan::where('status','active')->whereIn('id', $karyawanIds)->get()->keyBy('id');
+        $karyawanList = \App\Models\Karyawan::where('status', 'active')->whereIn('id', $karyawanIds)->get()->keyBy('id');
 
         $rankingByPosisi = [
             'HOST' => [],
@@ -731,7 +591,7 @@ class OrderController extends Controller
             $orderIdsQuery = null;
             $komisiField = null;
 
-            switch($data['posisi']) {
+            switch ($data['posisi']) {
                 case 'HOST':
                     $orderIdsQuery = Order::where('host_id', $data['id']);
                     $komisiField = 'komisi_host';
@@ -776,11 +636,12 @@ class OrderController extends Controller
             ];
         }
 
-        // Ambil top 2 per posisi
-        $topHosts = array_slice(collect($rankingByPosisi['HOST'])->sortByDesc('omzet_raw')->toArray(), 0, 2);
-        $topCoHosts = array_slice(collect($rankingByPosisi['CO HOST'])->sortByDesc('omzet_raw')->toArray(), 0, 2);
-        $topCS = array_slice(collect($rankingByPosisi['CS'])->sortByDesc('omzet_raw')->toArray(), 0, 2);
+        // Ambil top 2 per posisi, sudah sorted descending
+        $topHosts = collect($rankingByPosisi['HOST'])->sortByDesc('omzet_raw')->take(2)->values()->toArray();
+        $topCoHosts = collect($rankingByPosisi['CO HOST'])->sortByDesc('omzet_raw')->take(2)->values()->toArray();
+        $topCS = collect($rankingByPosisi['CS'])->sortByDesc('omzet_raw')->take(2)->values()->toArray();
 
+        // Gabungkan menjadi employee_card
         $employee_card = array_merge($topHosts, $topCoHosts, $topCS);
 
         // Format angka
@@ -791,9 +652,10 @@ class OrderController extends Controller
             return $r;
         }, $employee_card);
 
+
         // Ranking keseluruhan berdasarkan omzet
         $rankingAll = array_merge(...array_values($rankingByPosisi));
-        usort($rankingAll, fn($a,$b) => $b['omzet_raw'] <=> $a['omzet_raw']);
+        usort($rankingAll, fn($a, $b) => $b['omzet_raw'] <=> $a['omzet_raw']);
         $rankingTop3 = array_map(function ($r) {
             $r['omzet'] = number_format($r['omzet_raw'], 0, ',', '.');
             $r['komisi'] = number_format($r['komisi_raw'], 0, ',', '.');
