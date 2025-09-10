@@ -637,9 +637,24 @@ class OrderController extends Controller
         }
 
         // Ambil top 2 per posisi, sudah sorted descending
-        $topHosts = collect($rankingByPosisi['HOST'])->sortByDesc('omzet_raw')->take(2)->values()->toArray();
-        $topCoHosts = collect($rankingByPosisi['CO HOST'])->sortByDesc('omzet_raw')->take(2)->values()->toArray();
-        $topCS = collect($rankingByPosisi['CS'])->sortByDesc('omzet_raw')->take(2)->values()->toArray();
+        // Ambil top 2 per posisi berdasarkan komisi_raw descending
+        $topHosts = collect($rankingByPosisi['HOST'])
+            ->sortByDesc('komisi_raw')
+            ->take(2)
+            ->values()
+            ->toArray();
+
+        $topCoHosts = collect($rankingByPosisi['CO HOST'])
+            ->sortByDesc('komisi_raw')
+            ->take(2)
+            ->values()
+            ->toArray();
+
+        $topCS = collect($rankingByPosisi['CS'])
+            ->sortByDesc('komisi_raw')
+            ->take(2)
+            ->values()
+            ->toArray();
 
         // Gabungkan menjadi employee_card
         $employee_card = array_merge($topHosts, $topCoHosts, $topCS);
@@ -651,6 +666,7 @@ class OrderController extends Controller
             unset($r['omzet_raw'], $r['komisi_raw']);
             return $r;
         }, $employee_card);
+
 
 
         // Ranking keseluruhan berdasarkan omzet
